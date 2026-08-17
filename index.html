@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.className="js"</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shaik Mohammed Fareed — Full-Stack Developer</title>
+<meta name="description" content="Full-stack developer building the interfaces banks use to trace their data. React, Node.js and Oracle PL/SQL for Maybank and Standard Chartered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --ground:      #0A1B2E;
+  --ground-deep: #061321;
+  --panel:       #0E2439;
+  --grid:        rgba(127,182,217,.085);
+  --stroke:      #2E5573;
+  --hair:        rgba(127,182,217,.22);
+  --paper:       #E6F0F8;
+  --muted:       #8AAAC2;
+  --signal:      #F2A65A;
+  --live:        #6EE7B7;
+
+  --display: 'Archivo', system-ui, sans-serif;
+  --body:    'IBM Plex Sans', system-ui, sans-serif;
+  --mono:    'IBM Plex Mono', ui-monospace, monospace;
+
+  --rail: 84px;
+  --pad: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 1180px;
+
+  --t-fast: 180ms cubic-bezier(.2,.7,.3,1);
+  --t-mid:  420ms cubic-bezier(.2,.7,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* blueprint grid ground */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse 120% 90% at 50% 0%, #000 30%, transparent 92%);
+}
+body::after{
+  content:"";
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse 90% 55% at 50% -10%, rgba(46,85,115,.42), transparent 70%);
+}
+
+img,canvas,svg{display:block;max-width:100%}
+a{color:inherit}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.028em;line-height:1.02;margin:0}
+.eyebrow{
+  font-family:var(--mono);font-size:.66rem;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+}
+.callout{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+p{margin:0 0 1em}
+.lede{font-size:clamp(1rem,1.6vw,1.12rem);color:#BFD5E6;max-width:62ch}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;
+  background:var(--signal);color:var(--ground-deep);padding:.7rem 1.1rem;
+  font-family:var(--mono);font-size:.8rem;
+}
+.skip:focus{left:1rem;top:1rem}
+
+.rail{
+  position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;
+  border-right:1px solid var(--hair);
+  background:linear-gradient(180deg, rgba(6,19,33,.72), rgba(6,19,33,.4));
+  backdrop-filter:blur(6px);
+}
+.rail a{
+  writing-mode:vertical-rl;text-orientation:mixed;
+  font-family:var(--mono);font-size:.63rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;padding:.5rem .2rem;
+  transition:color var(--t-fast);position:relative;
+}
+.rail a::before{
+  content:"";position:absolute;left:-9px;top:50%;translate:0 -50%;
+  width:3px;height:3px;background:var(--stroke);
+  transition:background var(--t-fast), height var(--t-fast);
+}
+.rail a:hover,.rail a:focus-visible,.rail a.active{color:var(--paper)}
+.rail a.active::before{background:var(--signal);height:22px}
+.rail .mark{
+  font-family:var(--display);font-weight:800;font-size:.95rem;letter-spacing:-.02em;
+  color:var(--paper);border:1px solid var(--hair);padding:.4rem .5rem;
+  position:absolute;top:1.4rem;
+}
+
+main{position:relative;z-index:1;padding-left:var(--rail)}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+
+/* section chrome — corner ticks, like a drawing sheet */
+.sheet{position:relative;padding-block:clamp(4.5rem,9vw,7.5rem)}
+.sheet + .sheet{border-top:1px solid var(--hair)}
+.sheet-no{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;color:var(--stroke);
+  display:block;margin-bottom:.9rem;
+}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.9rem 1.4rem;margin-bottom:2.6rem}
+.head h2{font-size:clamp(1.9rem,4.2vw,3rem)}
+.head .callout{margin-left:auto}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:grid;align-items:center;padding-block:6rem 4rem}
+#lineage{
+  position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;
+}
+.hero .wrap{position:relative;z-index:2}
+.hero-tag{display:flex;align-items:center;gap:.6rem;margin-bottom:1.6rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(110,231,183,.55);animation:ping 2.6s ease-out infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(110,231,183,.5)}70%{box-shadow:0 0 0 11px rgba(110,231,183,0)}100%{box-shadow:0 0 0 0 rgba(110,231,183,0)}}
+
+.hero h1{
+  font-size:clamp(2.6rem,8.2vw,6.4rem);
+  line-height:.94;margin-bottom:1.4rem;
+}
+.hero h1 .ln{display:block;overflow:hidden}
+.hero h1 .ln > span{display:block}
+.js .hero h1 .ln > span{translate:0 105%;animation:rise .95s cubic-bezier(.16,1,.3,1) forwards}
+.hero h1 .ln:nth-child(2) > span{animation-delay:.09s}
+@keyframes rise{to{translate:0 0}}
+.hero h1 em{font-style:normal;color:var(--signal)}
+
+.hero-sub{max-width:54ch;font-size:clamp(1.02rem,1.9vw,1.22rem);color:#C6DAEA}
+.js .hero-sub{opacity:0;animation:fade .8s .5s ease forwards}
+@keyframes fade{to{opacity:1}}
+
+.hero-meta{
+  margin-top:2.8rem;display:flex;flex-wrap:wrap;gap:.7rem 2.2rem;
+}
+.js .hero-meta{opacity:0;animation:fade .8s .68s ease forwards}
+.hero-meta div{border-left:1px solid var(--stroke);padding-left:.85rem}
+.hero-meta b{display:block;font-family:var(--display);font-weight:600;font-size:1.02rem}
+.hero-meta span{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+.scroll-hint{
+  position:absolute;bottom:1.8rem;left:var(--pad);z-index:2;
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--stroke);
+  display:flex;align-items:center;gap:.6rem;
+}
+.scroll-hint::after{content:"";width:44px;height:1px;background:var(--stroke);animation:slide 2.4s ease-in-out infinite}
+@keyframes slide{0%,100%{transform:scaleX(.4);transform-origin:left}50%{transform:scaleX(1);transform-origin:left}}
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.js .rv{opacity:0;translate:0 18px;transition:opacity .7s cubic-bezier(.16,1,.3,1), translate .7s cubic-bezier(.16,1,.3,1)}
+.js .rv.in{opacity:1;translate:0 0}
+.no-js .rv{opacity:1}
+.rv[data-d="1"]{transition-delay:.07s}
+.rv[data-d="2"]{transition-delay:.14s}
+.rv[data-d="3"]{transition-delay:.21s}
+.rv[data-d="4"]{transition-delay:.28s}
+
+/* ============================================================
+   PROFILE
+   ============================================================ */
+.profile-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:clamp(2rem,5vw,4.5rem)}
+.stat-stack{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.stat{background:var(--panel);padding:1.15rem 1.3rem}
+.stat b{display:block;font-family:var(--display);font-size:1.18rem;font-weight:800;letter-spacing:-.02em;color:var(--signal);margin-bottom:.15rem}
+.stat span{font-family:var(--mono);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+
+/* ============================================================
+   WORK  (lineage nodes)
+   ============================================================ */
+.flow{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.node{
+  background:var(--panel);padding:clamp(1.4rem,3vw,2.2rem);
+  display:grid;grid-template-columns:auto 1fr auto;gap:1.6rem;align-items:start;
+  position:relative;cursor:default;
+  transition:background var(--t-fast);
+}
+.node::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;
+  transition:background var(--t-fast);
+}
+.node:hover,.node:focus-within{background:#12304A}
+.node:hover::before,.node:focus-within::before,.node.traced::before{background:var(--signal)}
+.node.traced{background:#12304A}
+/* pointer spotlight */
+.node::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%), rgba(242,166,90,.09), transparent 62%);
+  transition:opacity var(--t-mid);
+}
+.node:hover::after{opacity:1}
+
+.node-idx{font-family:var(--mono);font-size:.68rem;color:var(--stroke);letter-spacing:.1em;padding-top:.35rem}
+.node h3{font-size:clamp(1.15rem,2.2vw,1.45rem);margin-bottom:.35rem}
+.node .client{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--signal);display:block;margin-bottom:.55rem;
+}
+.node ul{margin:.9rem 0 0;padding:0;list-style:none;display:grid;gap:.55rem}
+.node li{position:relative;padding-left:1.1rem;color:#C2D6E6;font-size:.95rem}
+.node li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:1px;background:var(--stroke)}
+.node .when{font-family:var(--mono);font-size:.7rem;color:var(--muted);white-space:nowrap;padding-top:.35rem}
+.node .when .now{color:var(--live)}
+
+/* ============================================================
+   STACK  (trace targets)
+   ============================================================ */
+.stack-note{
+  font-family:var(--mono);font-size:.7rem;color:var(--muted);
+  border-left:2px solid var(--signal);padding-left:.8rem;margin-bottom:1.8rem;
+}
+.chips{display:flex;flex-wrap:wrap;gap:.55rem}
+.chip{
+  font-family:var(--mono);font-size:.78rem;
+  border:1px solid var(--hair);background:var(--panel);
+  padding:.5rem .85rem;color:#BFD5E6;
+  transition:border-color var(--t-fast), color var(--t-fast), background var(--t-fast), opacity var(--t-fast);
+}
+.tracing .chip{opacity:.24}
+.tracing .chip.lit{
+  opacity:1;border-color:var(--signal);color:var(--signal);
+  background:color-mix(in oklab, var(--signal) 9%, var(--panel));
+}
+.chip-group{margin-bottom:1.9rem}
+.chip-group > .eyebrow{display:block;margin-bottom:.7rem}
+
+/* ============================================================
+   CREDENTIALS
+   ============================================================ */
+.cred{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.cred > div{background:var(--panel);padding:1.5rem}
+.cred h3{font-size:1.02rem;margin-bottom:.4rem}
+.cred p{margin:0;color:var(--muted);font-size:.88rem}
+.cred .mark{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;color:var(--signal);text-transform:uppercase;display:block;margin-bottom:.8rem}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:end}
+.links{display:grid;gap:.2rem;margin-top:2rem}
+.link{
+  display:flex;align-items:baseline;gap:1rem;padding:1rem 0;
+  border-bottom:1px solid var(--hair);text-decoration:none;
+  font-family:var(--display);font-weight:600;font-size:clamp(1.05rem,2.4vw,1.5rem);
+  transition:color var(--t-fast), padding-left var(--t-fast);
+}
+.link:hover,.link:focus-visible{color:var(--signal);padding-left:.7rem}
+.link .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);min-width:88px;font-weight:400}
+.link .arrow{margin-left:auto;color:var(--stroke);transition:transform var(--t-fast)}
+.link:hover .arrow{transform:translateX(5px);color:var(--signal)}
+
+.cta{
+  display:inline-flex;align-items:center;gap:.7rem;margin-top:2.4rem;
+  background:var(--signal);color:var(--ground-deep);text-decoration:none;
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.95rem 1.5rem;border:1px solid var(--signal);
+  transition:background var(--t-fast), color var(--t-fast);
+}
+.cta:hover,.cta:focus-visible{background:transparent;color:var(--signal)}
+
+footer{
+  border-top:1px solid var(--hair);padding:2rem 0;
+  display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;
+  font-family:var(--mono);font-size:.68rem;color:var(--stroke);letter-spacing:.1em;
+}
+
+/* ============================================================
+   A11Y + RESPONSIVE
+   ============================================================ */
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+
+@media (max-width:900px){
+  :root{--rail:0px}
+  .rail{
+    left:0;right:0;top:auto;bottom:0;height:auto;width:auto;flex-direction:row;
+    justify-content:space-around;gap:.2rem;padding:.55rem .4rem;
+    border-right:none;border-top:1px solid var(--hair);
+  }
+  .rail a{writing-mode:horizontal-tb;font-size:.58rem;letter-spacing:.14em}
+  .rail a::before{left:50%;top:-6px;translate:-50% 0}
+  .rail a.active::before{height:3px;width:20px}
+  .rail .mark{display:none}
+  main{padding-left:0;padding-bottom:3.5rem}
+  .profile-grid,.contact-grid{grid-template-columns:1fr}
+  .node{grid-template-columns:1fr;gap:.6rem}
+  .node .when{padding-top:0}
+  .head .callout{margin-left:0;width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .hero h1 .ln > span{translate:0 0}
+  .hero-sub,.hero-meta{opacity:1}
+  .rv{opacity:1;translate:0 0}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#profile">Skip to content</a>
+
+<nav class="rail" aria-label="Sections">
+  <span class="mark">SF</span>
+  <a href="#profile">Profile</a>
+  <a href="#work">Work</a>
+  <a href="#stack">Stack</a>
+  <a href="#background">Background</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="top">
+    <canvas id="lineage" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="hero-tag">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="eyebrow">Available for freelance projects</span>
+      </div>
+
+      <h1>
+        <span class="ln"><span>Shaik Mohammed</span></span>
+        <span class="ln"><span>Fareed<em>.</em></span></span>
+      </h1>
+
+      <p class="hero-sub">
+        I build dashboards, admin panels and reporting tools — React on the front,
+        Node.js and serious SQL underneath. The kind of apps where the data is
+        messy and the numbers have to be right.
+      </p>
+
+      <div class="hero-meta">
+        <div><b>React &amp; Node.js</b><span>Frontend to API</span></div>
+        <div><b>Oracle PL/SQL</b><span>Pipelines &amp; procedures</span></div>
+        <div><b>2+ years</b><span>Banking &amp; regulatory</span></div>
+      </div>
+    </div>
+    <span class="scroll-hint" aria-hidden="true">Scroll</span>
+  </section>
+
+  <!-- ================= PROFILE ================= -->
+  <section class="sheet" id="profile">
+    <div class="wrap">
+      <span class="sheet-no rv">SHEET 01 — PROFILE</span>
+      <div class="head rv" data-d="1">
+        <h2>What I build</h2>
+        <span class="callout">Nandyal, Andhra Pradesh</span>
+      </div>
+
+      <div class="profile-grid">
+        <div class="rv" data-d="1">
+          <p class="lede">
+            By day I build data products for banks — including Maybank and Standard
+            Chartered — where a wrong number in a report becomes a regulatory problem.
+            That work taught me to treat correctness as a feature, not an afterthought.
+          </p>
+          <p class="lede">
+            For freelance clients I bring the same stack to smaller problems:
+            a dashboard over your sales data, an admin panel to replace a shared
+            spreadsheet, a REST API for your app, or a database that needs cleaning
+            up and speeding up.
+          </p>
+          <p class="lede">
+            You get one person who handles the whole path — the screen, the API
+            behind it, and the SQL behind that — so nothing gets lost between
+            a frontend person and a backend person.
+          </p>
+        </div>
+
+        <div class="stat-stack rv" data-d="2">
+          <div class="stat"><b>Dashboards</b><span>Charts &amp; tables over live data</span></div>
+          <div class="stat"><b>Admin panels</b><span>Replace the shared spreadsheet</span></div>
+          <div class="stat"><b>REST APIs</b><span>Designed, built, documented</span></div>
+          <div class="stat"><b>Database work</b><span>Modelling, cleanup, slow queries</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK ================= -->
+  <section class="sheet" id="work">
+    <div class="wrap">
+      <span class="sheet-no rv">SHEET 02 — WORK</span>
+      <div class="head rv" data-d="1">
+        <h2>Track record</h2>
+        <span class="callout">Delivered at Unisontech Services for banking clients · 2024 — present</span>
+      </div>
+
+      <div class="flow">
+
+        <article class="node rv" data-d="1" tabindex="0" data-stack="react javascript nodejs restapi css">
+          <span class="node-idx">01</span>
+          <div>
+            <span class="client">Client — Maybank</span>
+            <h3>Data Lineage Platform</h3>
+            <ul>
+              <li>Building the React frontend — interactive lineage views that let data and governance teams trace any field back to its source system without reading pipeline code.</li>
+              <li>Reusable components wired to backend lineage APIs, rendering large lineage datasets reliably in the browser.</li>
+            </ul>
+          </div>
+          <span class="when">Apr 2026 — <span class="now">Present</span></span>
+        </article>
+
+        <article class="node rv" data-d="2" tabindex="0" data-stack="react javascript nodejs restapi oracle mysql mssql sql dbeaver">
+          <span class="node-idx">02</span>
+          <div>
+            <span class="client">Regulatory reporting</span>
+            <h3>Reporting Platform</h3>
+            <ul>
+              <li>Dynamic UI screens in React integrated with Node.js REST APIs, replacing manual query work for client reporting teams.</li>
+              <li>Full-stack debugging — React rendering, API contracts and slow SQL across Oracle, MySQL and MSSQL — cutting turnaround on client-reported defects.</li>
+            </ul>
+          </div>
+          <span class="when">Nov 2024 — <span class="now">Present</span></span>
+        </article>
+
+        <article class="node rv" data-d="3" tabindex="0" data-stack="oracle plsql sql dbms">
+          <span class="node-idx">03</span>
+          <div>
+            <span class="client">Internal</span>
+            <h3>Cashflow Reporting Module</h3>
+            <ul>
+              <li>End-to-end pipeline: external source files into staging tables, every row validated against business rules, audited cashflow outputs for downstream reports.</li>
+              <li>Oracle PL/SQL procedures generating cashflows for LoanDepot and Security tables, replacing manual calculation with a repeatable process.</li>
+            </ul>
+          </div>
+          <span class="when">May 2025 — Dec 2025</span>
+        </article>
+
+        <article class="node rv" data-d="4" tabindex="0" data-stack="python sql">
+          <span class="node-idx">04</span>
+          <div>
+            <span class="client">Client — Standard Chartered Bank</span>
+            <h3>SAS to Python Migration</h3>
+            <ul>
+              <li>Migrated legacy SAS programs to modular Python, removing the client's dependency on licensed SAS tooling.</li>
+              <li>Unit-tested the migrated code against sample datasets to verify output parity with the legacy programs before sign-off.</li>
+            </ul>
+          </div>
+          <span class="when">Apr 2024 — Oct 2024</span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STACK ================= -->
+  <section class="sheet" id="stack">
+    <div class="wrap">
+      <span class="sheet-no rv">SHEET 03 — STACK</span>
+      <div class="head rv" data-d="1">
+        <h2>Upstream of that work</h2>
+      </div>
+
+      <p class="stack-note rv" data-d="1">
+        <span data-hover>Hover</span><span data-tap hidden>Tap</span> an engagement above to trace which of these it draws on.
+      </p>
+
+      <div class="chip-group rv" data-d="2">
+        <span class="eyebrow">Frontend</span>
+        <div class="chips">
+          <span class="chip" data-skill="react">React</span>
+          <span class="chip" data-skill="javascript">JavaScript (ES6+)</span>
+          <span class="chip" data-skill="css">HTML5 &amp; CSS3</span>
+          <span class="chip" data-skill="restapi">REST integration</span>
+        </div>
+      </div>
+
+      <div class="chip-group rv" data-d="3">
+        <span class="eyebrow">Backend</span>
+        <div class="chips">
+          <span class="chip" data-skill="nodejs">Node.js</span>
+          <span class="chip" data-skill="restapi">REST API development</span>
+          <span class="chip" data-skill="plsql">Oracle PL/SQL</span>
+          <span class="chip" data-skill="python">Python</span>
+        </div>
+      </div>
+
+      <div class="chip-group rv" data-d="4">
+        <span class="eyebrow">Data</span>
+        <div class="chips">
+          <span class="chip" data-skill="oracle">Oracle</span>
+          <span class="chip" data-skill="mysql">MySQL</span>
+          <span class="chip" data-skill="mssql">MSSQL</span>
+          <span class="chip" data-skill="sql">SQL</span>
+          <span class="chip" data-skill="dbms">DBMS design</span>
+          <span class="chip" data-skill="dbeaver">DBeaver</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BACKGROUND ================= -->
+  <section class="sheet" id="background">
+    <div class="wrap">
+      <span class="sheet-no rv">SHEET 04 — BACKGROUND</span>
+      <div class="head rv" data-d="1"><h2>Credentials</h2></div>
+
+      <div class="cred">
+        <div class="rv" data-d="1">
+          <span class="mark">Certification</span>
+          <h3>Databricks Certified Data Engineer</h3>
+          <p>Professional level</p>
+        </div>
+        <div class="rv" data-d="2">
+          <span class="mark">Education</span>
+          <h3>B.Tech — CSE (Data Science)</h3>
+          <p>Santhiram Engineering College, Nandyal · CGPA 8.05</p>
+        </div>
+        <div class="rv" data-d="3">
+          <span class="mark">Recognition</span>
+          <h3>Reliable Performer Award</h3>
+          <p>Unisontech Services India Pvt. Ltd.</p>
+        </div>
+        <div class="rv" data-d="4">
+          <span class="mark">Elsewhere</span>
+          <h3>2nd Prize — State Chess</h3>
+          <p>Andhra Pradesh tournament</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="sheet" id="contact">
+    <div class="wrap">
+      <span class="sheet-no rv">SHEET 05 — CONTACT</span>
+      <div class="head rv" data-d="1">
+        <h2>Get in touch</h2>
+        <span class="callout">Response within 24 hours</span>
+      </div>
+
+      <div class="rv" data-d="2">
+        <p class="lede">
+          Tell me what you're trying to build — or what's broken — and I'll reply
+          with how I'd approach it, how long it would take, and what it would cost.
+          A short call or a message is fine either way.
+        </p>
+
+        <div class="links">
+          <a class="link" href="mailto:mail2fareedmd@gmail.com">
+            <span class="k">Email</span> mail2fareedmd@gmail.com <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="link" href="tel:+917989745373">
+            <span class="k">Phone</span> +91 79897 45373 <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="link" href="https://www.linkedin.com/in/fareed-mohammed-b79b78283" target="_blank" rel="noopener">
+            <span class="k">LinkedIn</span> fareed-mohammed <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <a class="cta" href="mailto:mail2fareedmd@gmail.com?subject=Project%20enquiry">Start a project — email me</a>
+      </div>
+
+      <footer>
+        <span>SHAIK MOHAMMED FAREED · NANDYAL, AP</span>
+        <span>DRAWN 2026</span>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 1. Lineage canvas ---------- */
+  const cv = document.getElementById('lineage');
+  const ctx = cv.getContext('2d');
+
+  // Real lineage: his sources -> his transforms -> his outputs
+  const NODES = [
+    {c:0, label:'SOURCE SYSTEMS'},
+    {c:0, label:'EXTERNAL FILES'},
+    {c:0, label:'LEGACY SAS'},
+    {c:1, label:'VALIDATION RULES'},
+    {c:1, label:'PL/SQL PROCEDURES'},
+    {c:1, label:'REST APIs'},
+    {c:2, label:'LINEAGE VIEWS'},
+    {c:2, label:'REGULATORY REPORTS'},
+    {c:2, label:'CASHFLOW OUTPUTS'}
+  ];
+  const EDGES = [[0,3],[0,5],[1,3],[1,4],[2,4],[3,4],[3,7],[4,8],[4,7],[5,6],[5,7],[0,4]];
+
+  let W=0,H=0,dpr=1,pts=[],particles=[],raf=null,small=false;
+
+  function layout(){
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W*dpr; cv.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    small = W < 760;
+
+    // columns pushed to the right half on desktop so text stays readable
+    const x0 = small ? W*0.12 : W*0.50;
+    const span = small ? W*0.76 : W*0.44;
+    const colX = [x0, x0+span*0.5, x0+span];
+    const perCol = [0,0,0];
+    const counts = [0,0,0];
+    NODES.forEach(n=>counts[n.c]++);
+
+    const top = small ? H*0.30 : H*0.20;
+    const bot = small ? H*0.72 : H*0.80;
+
+    pts = NODES.map(n=>{
+      const i = perCol[n.c]++;
+      const t = counts[n.c] === 1 ? .5 : i/(counts[n.c]-1);
+      return {
+        x: colX[n.c],
+        y: top + (bot-top)*t,
+        label: n.label,
+        c: n.c,
+        ph: Math.random()*Math.PI*2
+      };
+    });
+
+    particles = EDGES.map((e,i)=>({e, t: (i*0.13)%1, sp: 0.0016 + Math.random()*0.0016}));
+  }
+
+  function bez(a,b,p){
+    const cx = (a.x+b.x)/2;
+    const mt = 1-p;
+    return {
+      x: mt*mt*mt*a.x + 3*mt*mt*p*cx + 3*mt*p*p*cx + p*p*p*b.x,
+      y: mt*mt*mt*a.y + 3*mt*mt*p*a.y + 3*mt*p*p*b.y + p*p*p*b.y
+    };
+  }
+
+  function draw(time){
+    ctx.clearRect(0,0,W,H);
+
+    // edges
+    EDGES.forEach(([i,j])=>{
+      const a=pts[i], b=pts[j];
+      const cx=(a.x+b.x)/2;
+      ctx.beginPath();
+      ctx.moveTo(a.x,a.y);
+      ctx.bezierCurveTo(cx,a.y,cx,b.y,b.x,b.y);
+      ctx.strokeStyle='rgba(127,182,217,.17)';
+      ctx.lineWidth=1;
+      ctx.stroke();
+    });
+
+    // particles
+    particles.forEach(p=>{
+      const a=pts[p.e[0]], b=pts[p.e[1]];
+      const q=bez(a,b,p.t);
+      const g=ctx.createRadialGradient(q.x,q.y,0,q.x,q.y,7);
+      g.addColorStop(0,'rgba(242,166,90,.85)');
+      g.addColorStop(1,'rgba(242,166,90,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(q.x,q.y,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(255,214,168,.95)';
+      ctx.beginPath(); ctx.arc(q.x,q.y,1.6,0,Math.PI*2); ctx.fill();
+      if(!reduce){ p.t += p.sp; if(p.t>1) p.t=0; }
+    });
+
+    // nodes
+    pts.forEach((p)=>{
+      const pulse = reduce ? 0 : Math.sin(time*0.0013 + p.ph)*0.5+0.5;
+      const r = 3.4 + pulse*1.1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,r+5,0,Math.PI*2);
+      ctx.fillStyle='rgba(110,231,183,'+(0.05+pulse*0.06)+')'; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
+      ctx.fillStyle = p.c===1 ? '#F2A65A' : '#7FB6D9';
+      ctx.fill();
+
+      if(!small){
+        ctx.font='500 9px "IBM Plex Mono", monospace';
+        ctx.fillStyle='rgba(138,170,194,.72)';
+        ctx.textAlign = p.c===2 ? 'right' : 'left';
+        const off = p.c===2 ? -10 : 10;
+        ctx.fillText(p.label, p.x+off, p.y+3);
+      }
+    });
+
+    if(!reduce) raf = requestAnimationFrame(draw);
+  }
+
+  function start(){
+    if(reduce){ draw(0); return; }          // one static frame, no loop
+    if(!raf) raf = requestAnimationFrame(draw);
+  }
+  function stop(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
+
+  layout(); start();
+
+  let rt;
+  window.addEventListener('resize', ()=>{ clearTimeout(rt); rt=setTimeout(layout,140); });
+
+  // pause when hero is offscreen — no wasted frames
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{
+      es.forEach(e=> e.isIntersecting ? start() : stop());
+    },{threshold:0.01}).observe(document.getElementById('top'));
+  }
+
+  document.addEventListener('visibilitychange', ()=> document.hidden ? stop() : start());
+
+
+  /* ---------- 2. Scroll reveals ---------- */
+  const hasIO = 'IntersectionObserver' in window;
+  if(!hasIO){
+    document.querySelectorAll('.rv').forEach(el=>el.classList.add('in'));
+  } else {
+    const revealer = new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('in'); revealer.unobserve(e.target); }
+      });
+    },{threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.rv').forEach(el=>revealer.observe(el));
+  }
+
+
+  /* ---------- 3. Active section in rail ---------- */
+  const railLinks = [...document.querySelectorAll('.rail a')];
+  if(hasIO){
+  const spy = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      railLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+e.target.id));
+    });
+  },{threshold:0.25, rootMargin:'-20% 0px -55% 0px'});
+  document.querySelectorAll('.sheet').forEach(s=>spy.observe(s));
+  }
+
+
+  /* ---------- 4. Lineage trace: engagement -> stack ---------- */
+  if(!window.matchMedia('(hover: hover)').matches){
+    const h=document.querySelector('[data-hover]'), t=document.querySelector('[data-tap]');
+    if(h&&t){ h.hidden=true; t.hidden=false; }
+  }
+  const stackSection = document.getElementById('stack');
+  const chips = [...document.querySelectorAll('.chip')];
+
+  function trace(on, list){
+    stackSection.classList.toggle('tracing', on);
+    chips.forEach(c=>{
+      c.classList.toggle('lit', on && list.includes(c.dataset.skill));
+    });
+  }
+
+  document.querySelectorAll('.node').forEach(node=>{
+    const list = (node.dataset.stack||'').split(/\s+/);
+    const on  = ()=>trace(true, list);
+    const off = ()=>trace(false, []);
+    node.addEventListener('mouseenter', on);
+    node.addEventListener('mouseleave', off);
+    node.addEventListener('click', ()=>{
+      const already = node.classList.contains('traced');
+      document.querySelectorAll('.node').forEach(n=>n.classList.remove('traced'));
+      if(already){ off(); } else { node.classList.add('traced'); on(); }
+    });
+    node.addEventListener('focus', on);
+    node.addEventListener('blur', off);
+
+    // pointer spotlight
+    node.addEventListener('pointermove', ev=>{
+      const r = node.getBoundingClientRect();
+      node.style.setProperty('--mx', (ev.clientX-r.left)+'px');
+      node.style.setProperty('--my', (ev.clientY-r.top)+'px');
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
